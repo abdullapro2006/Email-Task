@@ -39,6 +39,11 @@ public class MailController : Controller
 
         mimeMessage.To.Add(mailboxAddressTo);
 
+        var bodybuilder = new BodyBuilder();
+        bodybuilder.TextBody = mailRequest.Body;
+
+        mimeMessage.Body = bodybuilder.ToMessageBody();
+
         mimeMessage.Subject = mailRequest.Subject;
 
 
