@@ -7,19 +7,26 @@ using System.Linq;
 
 namespace Pustok.Controllers.Admin;
 
+[Route("admin/emails")]
 public class MailController : Controller
 {
-    [Route("admin/emails")]
 
 
     [HttpGet]
     public IActionResult Index()
     {
-        return View("Views/Admin/Mail/SendEmail.cshtml");
+        return View("Views/Mail/Index.cshtml");
     }
 
-    [HttpPost]
-    public IActionResult Index(MailRequest mailRequest)
+
+    [HttpGet("SendEmail", Name = "send-email")]
+    public IActionResult SendEmail()
+    {
+        return View("Views/Mail/SendEmail.cshtml");
+    }
+
+    [HttpPost("SendEmail",Name ="send-email")]
+    public IActionResult SendEmail(MailRequest mailRequest)
     {
         MimeMessage mimeMessage = new MimeMessage();
 
@@ -40,13 +47,13 @@ public class MailController : Controller
 
         client.Connect("smtp.gmail.com", 587,false);
 
-        client.Authenticate("abdullahmanafli38@gmail.com","3859589am");
+        client.Authenticate("abdullahmanafli38@gmail.com", "utczysoecaklhlff");
 
         client.Send(mimeMessage);
 
         client.Disconnect(true);
 
 
-        return View();
+        return View("Views/Mail/Index.cshtml");
     }
 }

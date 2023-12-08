@@ -48,6 +48,7 @@ public class UserController : Controller
         if (user == null)
             return NotFound();
 
+
         var model = new UserUpdateViewModel
         {
             Id = user.Id,

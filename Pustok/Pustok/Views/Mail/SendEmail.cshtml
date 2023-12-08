@@ -4,6 +4,8 @@
     Layout = "_AdminLayout";
 }
 ;
+
+
 @section custom_plugings{
     <link href="~/admin/assets/plugins/select/selectr.min.css" rel="stylesheet" type="text/css" />
 }
@@ -15,7 +17,7 @@
             <p class="text-muted mb-0">Send Email.</p>
         </div><!--end card-header-->
         <div class="card-body">
-            <form asp-controller="Email"  method="POST">
+            <form asp-route="send-email" method="POST">
                 <div class="form-group">
                     <label asp-for="Name">Email:</label>
                     <input asp-for="ReceiverMail" type="text" class="form-control"  placeholder="Enter receiver's mail'">
