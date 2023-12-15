@@ -141,4 +141,6 @@ public class PustokDbContext : DbContext
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderProduct> OrderProducts { get; set; }
     public DbSet<Notification> Notifications { get; set; }
+    public DbSet<UserNotification> UserNotifications { get; set; }
+
 }

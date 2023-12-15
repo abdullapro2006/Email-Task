@@ -1,16 +1,67 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Pustok.Contracts;
 using Pustok.Database;
+using Pustok.Extensions;
+using Pustok.Services.Abstract;
 using Pustok.ViewModels.Product;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Pustok.Controllers.Client;
 
 public class ProductController : Controller
 {
-    public IActionResult Index()
+    private readonly PustokDbContext _pustokdbContext;
+    private readonly IFileService _fileService;
+
+    public ProductController(PustokDbContext pustokdbContext, 
+        IFileService fileService)
     {
-        return View();
+        _pustokdbContext = pustokdbContext;
+        _fileService = fileService;
+    }
+
+    public async Task<IActionResult> Index()
+    {
+        var productsPageViewModel = new ProductsPageViewModel {
+
+            Products = await _pustokdbContext.Products.Select(p => new ProductViewModel
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Price = p.Price,
+                Rating = p.Rating,
+                ImageUrl = UploadDirectory.Products.GetUrl(p.ImageNameInFileSystem)
+            })
+            .ToListAsync(),
+
+            Categories = await _pustokdbContext.Categories
+            .Select(c => new CategoryViewModel
+            {
+                Id = c.Id,
+                Name = c.Name,
+                ProductsCount = c.Products.Count,
+
+            } )
+            .ToListAsync(),
+
+            Colors = await _pustokdbContext.Colors
+            .Select(c => new ColorViewModel
+            {
+                Id = c.Id,
+                Name = c.Name,
+                ProductsCount = c.ProductColors.Count,
+
+            })
+            .ToListAsync(),
+
+            PriceMinRange =  _pustokdbContext.Products.OrderBy(p => p.Price).FirstOrDefault()?.Price,
+            PriceMaxRange = _pustokdbContext.Products.OrderByDescending(p => p.Price).FirstOrDefault()?.Price,
+        
+        };
+
+        return View(productsPageViewModel);
     }
 
     public IActionResult SingleProduct(int id, [FromServices] PustokDbContext pustokDbContext)

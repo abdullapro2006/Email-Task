@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.EntityFrameworkCore;
 using Pustok.Contracts;
 using Pustok.Database;
 using Pustok.Database.DomainModels;
@@ -68,4 +69,39 @@ public class OrderService : IOrderService
 
         return notifications;
     }
+
+    public UserNotification CreateOrderBroadcast(Order order)
+    {
+        var staff = _userService.GetWholeStaff();
+       UserNotification userNotifications = new UserNotification();
+
+
+        foreach (var user in staff)
+        {
+            var userNotification = new UserNotification
+            {
+                Title = UserNotificationTemplate.Order.Created.TITLE,
+                Content = UserNotificationTemplate.Order.Created.CONTENT
+                    .Replace(UserNotificationKeyword.TRACKING_CODE, order.TrackingCode)
+                    .Replace(UserNotificationKeyword.USER_FULL_NAME, _userService.GetFullName(order.User)),
+
+                User = user,
+                CreatedAt = DateTime.UtcNow
+            };
+
+         
+
+            _pustokDbContext.UserNotifications.Add(userNotification);
+        }
+
+
+        return userNotifications;
+    }
+
+
+
+
+
+
+
 }

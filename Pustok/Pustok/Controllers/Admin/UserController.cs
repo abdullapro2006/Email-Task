@@ -34,10 +34,10 @@ public class UserController : Controller
         return View("Views/Admin/User/Users.cshtml", users);
     }
 
+
     #endregion
 
     #region Edit user
-
     [HttpGet("{id}/edit")]
     public IActionResult Edit(int id)
     {
